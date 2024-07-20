@@ -54,4 +54,35 @@ def move_zeroes(nums):
                 nums.append(0)
         return nums
 
-print(move_zeroes([0,1]))    
+def max_operations(nums, k):
+        if len(nums) < 2:
+            return 0
+        i = 0
+        j = len(nums) - 1
+        oper_num = 0
+        nums.sort()
+        while i < j:
+            if nums[i] + nums[j] == k:
+                i += 1
+                j -= 1
+                oper_num += 1
+            elif nums[i] + nums[j] < k:
+                i += 1
+            else:
+                j -= 1
+        return oper_num
+
+def findMaxAverage(nums, k):
+        sum_of_k = 0
+        max_avr = 0
+        for i in range(len(nums)):
+            if i < k:
+                sum_of_k += nums[i]
+                max_avr = sum_of_k / (i + 1)
+                continue
+            sum_of_k -= nums[i-k]
+            sum_of_k += nums[i]
+            max_avr = max(max_avr, sum_of_k / k)
+        return max_avr
+
+print(findMaxAverage([1,12,-5,-6,50,3],4))   
