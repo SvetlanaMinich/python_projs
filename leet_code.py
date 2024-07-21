@@ -72,7 +72,7 @@ def max_operations(nums, k):
                 j -= 1
         return oper_num
 
-def findMaxAverage(nums, k):
+def find_max_average(nums, k):
         sum_of_k = 0
         max_avr = 0
         for i in range(len(nums)):
@@ -86,34 +86,34 @@ def findMaxAverage(nums, k):
         return max_avr
 
 def longest_ones(nums, k):
-        cur_sub_len = 0
-        max_sub_len = 0
-        zero_num = 0
-        sub_start = 0
-        nums_len = len(nums)
-        i = 0
-        if k == 0:
-             while i < nums_len:
-                  if nums[i] == 0:
-                       max_sub_len = max(max_sub_len, cur_sub_len)
-                       cur_sub_len = -1
-                  cur_sub_len += 1
-                  i += 1
-        elif k >= nums_len:
-            return nums_len
-        else:
-            while i < nums_len:
-                if zero_num == k and nums[i] == 0:
-                    max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
-                    zero_num -= 1
-                    while nums[sub_start] != 0:
-                         sub_start += 1
+    cur_sub_len = 0
+    max_sub_len = 0
+    zero_num = 0
+    sub_start = 0
+    nums_len = len(nums)
+    i = 0
+    if k == 0:
+        while i < nums_len:
+            if nums[i] == 0:
+                max_sub_len = max(max_sub_len, cur_sub_len)
+                cur_sub_len = -1
+            cur_sub_len += 1
+            i += 1
+    elif k >= nums_len:
+        return nums_len
+    else:
+        while i < nums_len:
+            if zero_num == k and nums[i] == 0:
+                max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
+                zero_num -= 1
+                while nums[sub_start] != 0:
                     sub_start += 1
-                if nums[i] == 0:
-                    zero_num += 1
-                cur_sub_len += 1
-                i += 1
-        max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
-        return max_sub_len
+                sub_start += 1
+            if nums[i] == 0:
+                zero_num += 1
+            cur_sub_len += 1
+            i += 1
+    max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
+    return max_sub_len
 
 print(longest_ones([1,1,1,0,0,0,1,1,1,1,0], 2))

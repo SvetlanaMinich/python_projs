@@ -1,8 +1,12 @@
+import asyncio
+
 from bs4 import BeautifulSoup
 from requests import get
 import pandas as pd
-import re
-import html
+
+
+from aiogram import Bot, Dispatcher, types, filters
+
 
 class Scraping:
     def url(self, page):
@@ -39,6 +43,27 @@ class Scraping:
                 return df   
         return df
         
-newScrap = Scraping()
-df = newScrap.get_soup()
-df.to_csv(r'C:\python_projs\parser.csv', index=False)
+
+bot = Bot(token='6926945179:AAFh2fvSqFZkPs-yGlpeQ-o0ZdhnKk3vcfQ')
+dp = Dispatcher()
+
+@dp.message(filters.Command("file"))
+async def cmd_start(message : types.Message):
+    new_scrap = Scraping()
+    df = new_scrap.get_soup()
+    df.to_csv(r'C:\python_projs\parser.csv', index=False)
+
+    url = r'C:\python_projs\parser.csv'
+
+    await message.reply_document(
+        document=types.FSInputFile(
+            path=url,
+        ),
+        caption="here is csv file"
+    )
+
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == '__main__':
+    asyncio.run(main())
