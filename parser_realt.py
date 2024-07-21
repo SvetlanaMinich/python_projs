@@ -5,46 +5,40 @@ import re
 import html
 
 class Scraping:
-    def __init__(self, price):
-        self._price_to = price
-
-    def url(self):
-        return 'https://weekend.by/minsk/arenda-kvartir-na-dlitelniy-srok?sort=price'   #another site
-
-    @property
-    def price_to(self):
-        return self._price_to
-
-    @price_to.setter
-    def change_price_to(self, new_price):
-        if new_price > 0:
-            self._price_to = new_price
+    def url(self, page):
+        return f'https://weekend.by/minsk/arenda-kvartir-na-dlitelniy-srok?sort=-created_at&page={page}&per-page=42'   #another site
 
     def get_soup(self):
-        url = self.url()
-        response = get(url)
-        if response.status_code == 200:
-            html_soup = BeautifulSoup(response.text, 'html.parser')
-            titles = ['price_usd', 'price_byn', 'address', 'rooms_num', 'publication_date']
-            df = pd.DataFrame(columns=titles)
-            houses = html_soup.find('div', class_ = 'posts-list').find_all('div', class_ = 'col-12d')
-            for house in houses:
-                rooms_num = house.find('div', class_ = 'related_title').find('a').text
-                rooms_num = rooms_num.split(',')[0]
+        titles = ['price_usd', 'price_byn', 'subway_stat', 'rooms_num', 'publication_date']
+        df = pd.DataFrame(columns=titles)
+        for i in range(1,11):
+            url = self.url(i)
+            response = get(url)
+            if response.status_code == 200:
+                html_soup = BeautifulSoup(response.text, 'html.parser')
+                houses = html_soup.find('div', class_ = 'grid-of-cards__inner mdc-layout-grid__inner').find_all('div', class_ = 'mdc-layout-grid__cell mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop')
+                for house in houses:
+                    content = house.find('div', class_ = 'list-card__content')
 
-                price_byn = house.find('div', class_ = 'price').find('span', class_ = 'pia_link').find('span').text
+                    subway_stat = content.find('div', class_ = 'list-card__header').find('h3', class_ = 'list-card__subtitle mdc-typography mdc-typography--subtitle2').text.split('\n')[2].replace(" ","")[:-1]
 
-                price_usd = house.find('div', class_ = 'price').find('span', class_ = 'doppric').text
+                    price_usd = content.find('div', class_ = 'list-card__primary').find('div', class_ = 'hidden-xs list-card__price mdc-typography mdc-typography--headline6').text.split('\n')[1].replace(" ","")
 
-                address = house.find('div', class_ = 'info').find('div', class_ = 'probegla').text
+                    price_byn = content.find('div', class_ = 'list-card__primary').find('div', class_ = 'hidden-xs list-card__price mdc-typography mdc-typography--headline6').find('div', class_ = 'list-card__price-caption mdc-typography--caption').text.split('\n')[1].replace(" ","")
+                    
+                    rooms_num = content.find('div', class_ = 'list-card__secondary mdc-typography mdc-typography--body2').text.split('\n')[1].replace(" ","")
+                    
+                    publication_date = content.find('div', class_ = 'list-card__secondary mdc-typography mdc-typography--body2').find_all('span')[-1].text.split('\n')[1].replace(" ","")
 
-                appending_row = [price_usd, price_byn, address, rooms_num]
-                df_len = len(df)
-                df.loc[df_len] = appending_row
-            return df
-        else:
-            return False    
+                    appending_row = [price_usd, price_byn, subway_stat, rooms_num, publication_date]
+                    df_len = len(df)
+                    df.loc[df_len] = appending_row
+            else:
+                if df.empty:
+                    return False
+                return df   
+        return df
         
-newScrap = Scraping(400)
+newScrap = Scraping()
 df = newScrap.get_soup()
-print(df)
+df.to_csv(r'C:\python_projs\parser.csv', index=False)

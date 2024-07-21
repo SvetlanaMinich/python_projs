@@ -85,4 +85,35 @@ def findMaxAverage(nums, k):
             max_avr = max(max_avr, sum_of_k / k)
         return max_avr
 
-print(findMaxAverage([1,12,-5,-6,50,3],4))   
+def longest_ones(nums, k):
+        cur_sub_len = 0
+        max_sub_len = 0
+        zero_num = 0
+        sub_start = 0
+        nums_len = len(nums)
+        i = 0
+        if k == 0:
+             while i < nums_len:
+                  if nums[i] == 0:
+                       max_sub_len = max(max_sub_len, cur_sub_len)
+                       cur_sub_len = -1
+                  cur_sub_len += 1
+                  i += 1
+        elif k >= nums_len:
+            return nums_len
+        else:
+            while i < nums_len:
+                if zero_num == k and nums[i] == 0:
+                    max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
+                    zero_num -= 1
+                    while nums[sub_start] != 0:
+                         sub_start += 1
+                    sub_start += 1
+                if nums[i] == 0:
+                    zero_num += 1
+                cur_sub_len += 1
+                i += 1
+        max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
+        return max_sub_len
+
+print(longest_ones([1,1,1,0,0,0,1,1,1,1,0], 2))
