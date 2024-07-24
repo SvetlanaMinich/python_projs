@@ -1,3 +1,5 @@
+import math
+
 def compress(chars):
     if len(chars) == 1:
         return 1
@@ -116,4 +118,110 @@ def longest_ones(nums, k):
     max_sub_len = max(max_sub_len, cur_sub_len - sub_start)
     return max_sub_len
 
-print(longest_ones([1,1,1,0,0,0,1,1,1,1,0], 2))
+def pivotIndex(nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        right_sum_list = []
+        nums_len = len(nums)
+        if nums_len == 1:
+            return 0
+        i = nums_len - 1
+        sum_el = 0
+        while i >= 0:
+            sum_el += nums[i]
+            right_sum_list.insert(0, sum_el)
+            i -= 1
+        sum_el = 0
+        i = 0
+        while i < nums_len:
+            sum_el += nums[i]
+            nums[i] = sum_el
+            i += 1
+        i = 1
+        if right_sum_list[1] == 0:
+            return 0
+        while i < nums_len - 1:
+            if nums[i-1] == right_sum_list[i+1]:
+                return i
+            i += 1  
+        if nums[nums_len-2] == 0:
+            return nums_len - 1  
+        return -1
+
+def find_difference(nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[List[int]]
+        """
+        i = 0
+        while i < len(nums1):
+            ch = nums1[i]
+            if ch in nums2:
+                while ch in nums1:
+                    nums1.remove(ch)
+                    i -= 1
+                while ch in nums2:
+                    nums2.remove(ch)
+            i += 1
+        for i in nums1:
+            while nums1.count(i) > 1:
+                nums1.remove(i)
+        for i in nums2:
+            while nums2.count(i) > 1:
+                nums2.remove(i)
+        return [nums1,nums2]
+
+def equal_pairs(grid):
+        """
+        :type grid: List[List[int]]
+        :rtype: int
+        """
+        n = len(grid)
+        rows = []
+        columns = []
+        column = []
+        for i in range(n):
+            rows.append(grid[i])
+        for i in range(n):
+            for j in range(n):
+                column.append(grid[j][i])
+            columns.append(column)
+            column = []
+        count = 0
+        for i in rows:
+            if i in columns:
+                count += columns.count(i)
+        return count  
+
+
+def remove_stars(s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        # while s.index('*') == 0:
+        #     s.remove('*')
+        # while '*' in s:
+        #     star_index = s.index('*')
+        #     s = s[:star_index-1] + s[star_index+1:]
+        # return s
+        stack = []
+    
+        for char in s:
+            if char == '*':
+                if stack:
+                    stack.pop()
+            else:
+                stack.append(char)
+        
+        # Convert stack to string
+        return ''.join(stack)
+
+s = 'hjhkj9'
+if ('1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9' or '0') in s:
+    print('Yes')
+else:
+    print('No')
