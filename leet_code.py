@@ -220,8 +220,123 @@ def remove_stars(s):
         # Convert stack to string
         return ''.join(stack)
 
-s = 'hjhkj9'
-if ('1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9' or '0') in s:
-    print('Yes')
-else:
-    print('No')
+def asteroid_collision(asteroids):
+        """
+        :type asteroids: List[int]
+        :rtype: List[int]
+        """
+        res = []
+        for i in asteroids:
+            if i > 0:
+                res.append(i)
+            else:
+                cur = (-1)*i
+                if res:
+                    el = res.pop()
+                    if el > 0:
+                        if cur < el:
+                            res.append(el)
+                        elif cur > el:
+                            while cur > el and res and el > 0:
+                                el = res.pop()
+                            if el < 0:
+                                res.append(el)
+                                res.append(i)
+                            elif cur < el:
+                                res.append(el)
+                            elif cur == el:
+                                continue
+                            elif len(res) == 0:
+                                res.append(i)
+                    else:
+                        res.append(el)
+                        res.append(i)
+                else:
+                    res.append(i)
+        return res
+
+
+class Solution(object):
+    def decodeString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        # res = ""
+        # nums = "0123456789"
+        # count = ""
+        # rep = True
+        # while rep == True:
+        #     in_len = 0
+        #     str_to_repeat = ""
+        #     slen = len(s)
+        #     i = 0
+        #     while i < slen:
+        #         if s[i] in nums:
+        #             while s[i] in nums:
+        #                 count += s[i]
+        #                 i += 1
+        #             count = int(count)
+        #             ind_of_close = s[i+1:].find(']') + i + 1
+        #             ind_of_start = s[i+1:].find('[')
+        #             if ind_of_start != -1:
+        #                 ind_of_start += i + 1
+        #                 if ind_of_start < ind_of_close:
+        #                     while ind_of_start < ind_of_close:
+        #                         in_len += 1
+        #                         ind_of_close = s[i+1:].find(']') + i + 1
+        #                         ind_of_start = s[i+1:].find('[') + i + 1
+        #                     while in_len > 0:
+        #                         ind_of_close = s[i+1:].find(']') + i + 1
+        #                         in_len -= 1
+        #             i += 1
+        #             while i < ind_of_close:
+        #                 str_to_repeat += s[i]
+        #                 i += 1
+        #             res += (str_to_repeat * count)
+        #         else:
+        #             res += s[i]
+        #         i += 1
+        #         str_to_repeat = ""
+        #         count = ""
+
+        #     if '[' in res:
+        #         s = res
+        #         res = ""
+        #     else:
+        #         rep = False    
+        # return res
+
+        rs = ""
+        res = []
+        str_to_rep = ""
+        count = ""
+        nums = "0123456789"
+        for i in s:
+            if i == ']':
+                el = i
+                while el != '[':
+                    el = res.pop()
+                    if el == '[':
+                        break
+                    str_to_rep = el + str_to_rep
+                el = res.pop()
+                count += el
+                while res:
+                    el = res.pop()
+                    if el not in nums:
+                        res.append(el)
+                        break
+                    count += el
+                count = int(count[::-1])
+                res.append(str_to_rep * count)
+                str_to_rep = ""
+                count = ""
+            else:
+                res.append(i)
+        for i in res:
+            rs += i
+        return rs
+
+s = Solution()
+print(s.decodeString("3[z]2[2[y]pq4[2[jk]e1[f]]]ef") == "zzzyypqjkjkefjkjkefjkjkefjkjkefyypqjkjkefjkjkefjkjkefjkjkefef")
