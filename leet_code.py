@@ -1,4 +1,5 @@
 import math
+from collections import deque
 
 def compress(chars):
     if len(chars) == 1:
@@ -256,87 +257,199 @@ def asteroid_collision(asteroids):
         return res
 
 
-class Solution(object):
-    def decodeString(self, s):
+# class Solution(object):
+#     def decodeString(self, s):
+#         """
+#         :type s: str
+#         :rtype: str
+#         """
+#         # res = ""
+#         # nums = "0123456789"
+#         # count = ""
+#         # rep = True
+#         # while rep == True:
+#         #     in_len = 0
+#         #     str_to_repeat = ""
+#         #     slen = len(s)
+#         #     i = 0
+#         #     while i < slen:
+#         #         if s[i] in nums:
+#         #             while s[i] in nums:
+#         #                 count += s[i]
+#         #                 i += 1
+#         #             count = int(count)
+#         #             ind_of_close = s[i+1:].find(']') + i + 1
+#         #             ind_of_start = s[i+1:].find('[')
+#         #             if ind_of_start != -1:
+#         #                 ind_of_start += i + 1
+#         #                 if ind_of_start < ind_of_close:
+#         #                     while ind_of_start < ind_of_close:
+#         #                         in_len += 1
+#         #                         ind_of_close = s[i+1:].find(']') + i + 1
+#         #                         ind_of_start = s[i+1:].find('[') + i + 1
+#         #                     while in_len > 0:
+#         #                         ind_of_close = s[i+1:].find(']') + i + 1
+#         #                         in_len -= 1
+#         #             i += 1
+#         #             while i < ind_of_close:
+#         #                 str_to_repeat += s[i]
+#         #                 i += 1
+#         #             res += (str_to_repeat * count)
+#         #         else:
+#         #             res += s[i]
+#         #         i += 1
+#         #         str_to_repeat = ""
+#         #         count = ""
+
+#         #     if '[' in res:
+#         #         s = res
+#         #         res = ""
+#         #     else:
+#         #         rep = False    
+#         # return res
+
+#         rs = ""
+#         res = []
+#         str_to_rep = ""
+#         count = ""
+#         nums = "0123456789"
+#         for i in s:
+#             if i == ']':
+#                 el = i
+#                 while el != '[':
+#                     el = res.pop()
+#                     if el == '[':
+#                         break
+#                     str_to_rep = el + str_to_rep
+#                 el = res.pop()
+#                 count += el
+#                 while res:
+#                     el = res.pop()
+#                     if el not in nums:
+#                         res.append(el)
+#                         break
+#                     count += el
+#                 count = int(count[::-1])
+#                 res.append(str_to_rep * count)
+#                 str_to_rep = ""
+#                 count = ""
+#             else:
+#                 res.append(i)
+#         for i in res:
+#             rs += i
+#         return rs
+
+class RecentCounter(object):
+
+    def __init__(self):
+        self.deq = []
+
+    def ping(self, t):
         """
-        :type s: str
+        :type t: int
+        :rtype: int
+        """
+        self.deq.append(t)
+        while self.deq:
+            if self.deq[0] in range(t-3000, t+1):
+                break
+            self.deq.pop(0)
+        return len(self.deq)
+    
+
+def predictPartyVictory(senate):
+        """
+        :type senate: str
         :rtype: str
         """
-        # res = ""
-        # nums = "0123456789"
-        # count = ""
-        # rep = True
-        # while rep == True:
-        #     in_len = 0
-        #     str_to_repeat = ""
-        #     slen = len(s)
-        #     i = 0
-        #     while i < slen:
-        #         if s[i] in nums:
-        #             while s[i] in nums:
-        #                 count += s[i]
-        #                 i += 1
-        #             count = int(count)
-        #             ind_of_close = s[i+1:].find(']') + i + 1
-        #             ind_of_start = s[i+1:].find('[')
-        #             if ind_of_start != -1:
-        #                 ind_of_start += i + 1
-        #                 if ind_of_start < ind_of_close:
-        #                     while ind_of_start < ind_of_close:
-        #                         in_len += 1
-        #                         ind_of_close = s[i+1:].find(']') + i + 1
-        #                         ind_of_start = s[i+1:].find('[') + i + 1
-        #                     while in_len > 0:
-        #                         ind_of_close = s[i+1:].find(']') + i + 1
-        #                         in_len -= 1
-        #             i += 1
-        #             while i < ind_of_close:
-        #                 str_to_repeat += s[i]
-        #                 i += 1
-        #             res += (str_to_repeat * count)
+        # r_count = senate.count('R')
+        # d_count = senate.count('D')
+        d = deque()
+
+        cur_el = 1
+        # while r_count > 0 and d_count > 0:
+        #     if d[0] != d[cur_el]:
+        #         if d[cur_el] == 'R':
+        #             r_count -= 1
         #         else:
-        #             res += s[i]
-        #         i += 1
-        #         str_to_repeat = ""
-        #         count = ""
+        #             d_count -= 1
+        #         el = d.popleft()
+        #         d.append(el)
+        #         cur_el -= 1
+        #     cur_el += 1 
+        s_len = len(senate) 
+        i = 0  
+        while i < s_len:
+            if d and d[0] != senate[i]:
+                el = d.popleft()
+                senate += el
+                s_len += 1
+                i += 1
+                continue
+            d.append(senate[i]) 
+            i += 1   
+        if d[0] == 'R':
+            return "Radiant"
+        else:
+            return "Dire"
 
-        #     if '[' in res:
-        #         s = res
-        #         res = ""
-        #     else:
-        #         rep = False    
-        # return res
+# alp = "АВЕКМНОРСТУХ"
+# is_correct = True
+# s = "АЯ123В_45"
+# if len(s) < 9 or len(s) > 10:
+#     print("NO")
+# else:
+#     if s[:1].isalpha() and s[1:4].isdigit() and s[4:6].isalpha() and s[7:].isdigit() and s[6] == '_':
+#         for i in s[4:6]:
+#             if i not in alp:
+#                 is_correct = False
+#         if s[0] not in alp:
+#             is_correct = False
+#     else:
+#         is_correct = False
+#     if is_correct:
+#         print('YES')
+#     else:
+#         print('NO')
 
-        rs = ""
-        res = []
-        str_to_rep = ""
-        count = ""
-        nums = "0123456789"
-        for i in s:
-            if i == ']':
-                el = i
-                while el != '[':
-                    el = res.pop()
-                    if el == '[':
-                        break
-                    str_to_rep = el + str_to_rep
-                el = res.pop()
-                count += el
-                while res:
-                    el = res.pop()
-                    if el not in nums:
-                        res.append(el)
-                        break
-                    count += el
-                count = int(count[::-1])
-                res.append(str_to_rep * count)
-                str_to_rep = ""
-                count = ""
-            else:
-                res.append(i)
-        for i in res:
-            rs += i
-        return rs
 
-s = Solution()
-print(s.decodeString("3[z]2[2[y]pq4[2[jk]e1[f]]]ef") == "zzzyypqjkjkefjkjkefjkjkefjkjkefyypqjkjkefjkjkefjkjkefjkjkefef")
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class ListNode(object):
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution(object):
+    def reverseList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if head and head.next:
+            tail = head
+            num = 1
+            while tail.next:
+                num += 1
+                tail = tail.next
+            i = 0
+            while i < num:
+                buf = head
+                head = head.next
+                buf.next = tail.next
+                tail.next = buf
+                i += 1
+        return head
+    
+
+head = ListNode(5,None)
+head = ListNode(4,head)
+head = ListNode(3,head)
+head = ListNode(2,head)
+head = ListNode(1,head)
+sol = Solution()
+print(sol.reverseList(head))
