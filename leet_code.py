@@ -424,6 +424,14 @@ class ListNode(object):
         self.val = val
         self.next = next
 
+
+class tree_node(object):
+    def __init__(self, val=0, right=None, left = None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
 class Solution(object):
     def reverseList(self, head):
         """
@@ -445,11 +453,35 @@ class Solution(object):
                 i += 1
         return head
     
+    def goodNodes(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        def good(sum = 0,node=root):
+            if node.right:
+                if node.val <= node.right.val:
+                    if not node.right.right and not node.right.left:
+                        node.right = None
+                        sum = 2 + good(sum, node.right)
+                    sum =  1 + good(sum, node.right)
+                sum = good(node.right)
+            if node.left:
+                if node.val <= node.left.val:
+                    if not node.left.right and not node.left.left:
+                        sum = 2 + good(sum, node.right)
+                    sum = 1 + good(sum, node.left)
+                sum = good(sum, node.left)
+            return sum
+        
+        return good(0, root)   
+    
+n1 = tree_node(3)
+n2 = tree_node(1)
+n3 = tree_node(5)
+n4 = tree_node(1,left=n1)
+n5 = tree_node(4, left=n2, right=n3)
+root = tree_node(3, left=n4, right = n5)
 
-head = ListNode(5,None)
-head = ListNode(4,head)
-head = ListNode(3,head)
-head = ListNode(2,head)
-head = ListNode(1,head)
 sol = Solution()
-print(sol.reverseList(head))
+print(sol.goodNodes(root=root))
