@@ -72,9 +72,6 @@ try:
         for i in range(len(vectors))
     ]
 
-    # print(f"Data has {len(data)} entities with fields: [{data[0].keys()}]")
-    # print(f"Vector dim: {len(data[0]["vector"])}")
-
     add_docs = [
         "On July 20, 1969, Neil Armstrong became the first human to walk on the Moon during NASA's Apollo 11 mission.",
         "The Berlin Wall, dividing East and West Berlin, fell on November 9, 1989, marking the end of the Cold War era.",
